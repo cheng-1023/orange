@@ -8,6 +8,7 @@ import com.github.freakchick.orange.util.RegexUtil;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 
@@ -91,6 +92,10 @@ public class ForeachSqlNode implements SqlNode {
     public String getChildText(Context proxy, int currentIndex) {
         String newItem = String.format("%s[%d]", collection, currentIndex);  //ognl可以直接获取  aaa[0]  形式的值
         String newIndex = String.format("%s[%d]", indexDataName, currentIndex);
+
+        Map<String, Object> data = proxy.getData();
+        data.put(this.item, proxy.getOgnlValue(newItem));
+        data.put(this.index, currentIndex);
         this.contents.apply(proxy);
         String sql = proxy.getSql();
         TokenParser tokenParser = new TokenParser("#{", "}", new TokenHandler() {
